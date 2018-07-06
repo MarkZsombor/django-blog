@@ -2,10 +2,19 @@ from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
+from .forms import PostForm
 from .models import Post
 
 def post_create(request):
-    return HttpResponse("<h1>Create</h1>")
+    # the django form has all the needed validation built in
+    form = PostForm(request.POST)
+    if form.is_valid():
+        instance = form.save(commit=False)
+        instance.save()
+    context = {
+        "form": form,
+    }
+    return render(request, "post_form.html", context)
 
 
 def post_detail(request, id=None):
